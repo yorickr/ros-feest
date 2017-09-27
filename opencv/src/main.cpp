@@ -29,6 +29,11 @@ int main(int argc, char **argv) {
 
     VideoCapture cap = VideoCapture(0);
 
+    init(argc, argv, "opencv_camera_head_tracking");
+    NodeHandle nh;
+
+    Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 100);
+
 		if (!cap.isOpened())
 	 	{
 	 			cout << "Cannot open the video cam" << endl;
@@ -44,7 +49,9 @@ int main(int argc, char **argv) {
 
     Mat frame;
 		vector<pair<int, Rect>> points;
-    while(true) {
+    Rate rate(10);
+    cout << "Starting loop" << endl;
+    while(ok()) {
         bool suc = cap.read(frame);
         if (!suc) {
             cout << "Can't read frame from camera" << endl;
@@ -52,17 +59,36 @@ int main(int argc, char **argv) {
         }
 				points = detectFace(frame);
 				cout << "Found faces" << points.size() << endl;
+        geometry_msgs::Twist msg;
         for ( size_t i = 0; i < points.size(); i++) {
             cout << "Drawing point " << points[i].first << endl;
             Point faceCenter;
             faceCenter.x = points[i].second.x + points[i].second.width/2;
             faceCenter.y = points[i].second.y + points[i].second.height/2;
+            // if in right side of screen
+            int halfWidth = dWidth/2;
+            int sensitivity = 30;
+            if (faceCenter.x > halfWidth + sensitivity) {
+                // robot should turn right
+                msg.angular.z = 2;
+            } else if (faceCenter.x < halfWidth - sensitivity) {
+                // robot should turn left
+                msg.angular.z = -2;
+            } else {
+                msg.linear.x = 4;
+            }
             ellipse(frame, faceCenter, Size(points[i].second.width/2, points[i].second.height/2), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0);
         }
         imshow("Image", frame);
+        //geometry_msgs::Twist msg;
+        //msg.linear.x = 4;
+        //msg.angular.z = 4;
+        pub.publish(msg);
+        //spinOnce();
         if (waitKey(1) == 27) {
             break;
         }
+        rate.sleep();
     }
     return 0;
 }

@@ -20,5 +20,6 @@
 
 using namespace cv;
 using namespace std;
+using namespace ros;
 
 #endif
