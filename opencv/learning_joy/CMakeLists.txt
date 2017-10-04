@@ -199,3 +199,6 @@ include_directories(
 # catkin_add_nosetests(test)
 add_executable(turtle_teleop_joy src/turtle_teleop_joy.cpp)
 target_link_libraries(turtle_teleop_joy ${catkin_LIBRARIES})
+
+add_executable(joystick_rosaria src/joystick_rosaria.cpp)
+target_link_libraries(joystick_rosaria ${catkin_LIBRARIES})
