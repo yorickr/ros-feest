@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     init(argc, argv, "opencv_camera_head_tracking");
     NodeHandle nh;
 
-    Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 100);
+    Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 100);
 
 		if (!cap.isOpened())
 	 	{
@@ -67,15 +67,16 @@ int main(int argc, char **argv) {
             faceCenter.y = points[i].second.y + points[i].second.height/2;
             // if in right side of screen
             int halfWidth = dWidth/2;
-            int sensitivity = 30;
+            int sensitivity = 50;
+            float turnConstant = 0.25f;
             if (faceCenter.x > halfWidth + sensitivity) {
                 // robot should turn right
-                msg.angular.z = 2;
+                msg.angular.z = -turnConstant;
             } else if (faceCenter.x < halfWidth - sensitivity) {
                 // robot should turn left
-                msg.angular.z = -2;
+                msg.angular.z = turnConstant;
             } else {
-                msg.linear.x = 4;
+                msg.linear.x = -4;
             }
             ellipse(frame, faceCenter, Size(points[i].second.width/2, points[i].second.height/2), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0);
         }
