@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
         bool suc = cap.read(frame);
         if (!suc) {
             cout << "Can't read frame from camera" << endl;
-	    ROS_FATAL("Can't read frame from camera!");
+	          ROS_FATAL("Can't read frame from camera!");
             return -1;
         }
 				points = detectFace(frame);
@@ -87,9 +87,9 @@ int main(int argc, char **argv) {
         }
         imshow("Image", frame);
 
-	if (msg.angular.z>0)ROS_INFO("Turning left to follow face.");
-	if (msg.angular.z<0)ROS_INFO("Turning right to follow face.");
-	if (msg.linear.x<0)ROS_INFO("Driving towards face.");
+	      if (msg.angular.z>0)ROS_INFO("Turning left to follow face.");
+	      if (msg.angular.z<0)ROS_INFO("Turning right to follow face.");
+	      if (msg.linear.x<0)ROS_INFO("Driving towards face.");
         //geometry_msgs::Twist msg;
         //msg.linear.x = 4;
         //msg.angular.z = 4;
