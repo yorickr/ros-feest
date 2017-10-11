@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     init(argc, argv, "opencv_camera_head_tracking");
     NodeHandle nh;
 
-    Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 100);
+    Publisher pub = nh.advertise<priorityhandler::PrioMsg>("Prio/cmd_vel", 100);
 
 		if (!cap.isOpened())
 	 	{
@@ -93,7 +93,10 @@ int main(int argc, char **argv) {
         //geometry_msgs::Twist msg;
         //msg.linear.x = 4;
         //msg.angular.z = 4;
-        pub.publish(msg);
+        priorityhandler::PrioMsg prio_msg;
+        prio_msg.priority = 1;
+        prio_msg.cmd = msg;
+        pub.publish(prio_msg);
         //spinOnce();
         if (waitKey(1) == 27) {
             break;
