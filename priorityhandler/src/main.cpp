@@ -1,7 +1,7 @@
 #include "priorityhandler/includes.h"
 
 void cmd_vel_cb(const priorityhandler::PrioMsg msg) {
-    cout << "Message received in cmd_vel_cb" << endl;
+    cout << "Message received with priority " << msg.priority << endl;
 }
 
 int main(int argc, char **argv) {
