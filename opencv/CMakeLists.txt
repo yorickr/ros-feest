@@ -10,6 +10,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  priorityhandler
 )
 
 find_package(OpenCV REQUIRED)
@@ -106,7 +107,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
   #INCLUDE_DIRS /usr/local/share/
   LIBRARIES opencv
-#  CATKIN_DEPENDS roscpp std_msgs
+  CATKIN_DEPENDS roscpp std_msgs priorityhandler
   #DEPENDS opencv
 )
 
@@ -202,5 +203,5 @@ include_directories(
 
 add_executable(opencv src/main.cpp)
 target_link_libraries(opencv ${catkin_LIBRARIES} ${OpenCV_LIBS})
-#add_dependencies(opencv random_turtle_generate_messages_cpp)
+add_dependencies(opencv ${catkin_EXPORTED_TARGETS})
 
