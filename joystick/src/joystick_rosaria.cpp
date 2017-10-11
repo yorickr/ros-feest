@@ -1,7 +1,8 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
-#include <sensor_msgs/Joy.h>
- 
+#include <sensor_msgs/Joy.h> 
+#include <priorityhandler/PrioMsg.h>
+
 ros::Publisher pioneer_vel;
  
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
@@ -11,7 +12,12 @@ void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
         twist.linear.x = joy->axes[1] > 0 ? (joy->axes[1] > 0.5 ? 0.5 : joy->axes[1]) : (joy->axes[1] < -0.5 ? -0.5 : joy->axes[1]) ;
         twist.linear.y = 0;
         twist.angular.z= joy->axes[0] > 0 ? (joy->axes[0] > 0.5 ? 0.5 : joy->axes[0]) : (joy->axes[0] < -0.5 ? -0.5 : joy->axes[0]);
-        pioneer_vel.publish(twist);
+       //pioneer_vel.publish(twist);
+
+	priorityhandler::PrioMsg prio_msg;
+        prio_msg.priority = 5;
+        prio_msg.cmd = twist;
+        pioneer_vel.publish(prio_msg);
 }
  
 int main(int argc, char **argv)
@@ -23,7 +29,7 @@ int main(int argc, char **argv)
  
         // create publisher
  
-        ros::Publisher cmd_vel_topic = n.advertise<geometry_msgs::Twist>("/RosAria/cmd_vel", 1000);
+        ros::Publisher cmd_vel_topic = n.advertise<priorityhandler::PrioMsg>("Prio/cmd_vel", 1000);
  
         pioneer_vel = cmd_vel_topic;
  

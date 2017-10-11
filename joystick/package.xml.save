@@ -40,16 +40,12 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-<!-- <build_depend>joy</build_depend>  
-<build_depend>roscpp</build_depend>
-  <build_depend>turtlesim</build_depend> -->
-
-<depend>
-	joy
-</depend>
-<depend>roscpp</depend>
-<depend>std_msgs</depend>
-<depend>priorityhandler</depend>
+  <build_depend>joy</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>turtlesim</build_depend>
+  <run_depend>joy</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>turtlesim</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
