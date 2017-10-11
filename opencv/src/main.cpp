@@ -58,10 +58,10 @@ int main(int argc, char **argv) {
             return -1;
         }
 				points = detectFace(frame);
-				cout << "Found faces" << points.size() << endl;
+				//cout << "Found faces" << points.size() << endl;
         geometry_msgs::Twist msg;
         for ( size_t i = 0; i < points.size(); i++) {
-            cout << "Drawing point " << points[i].first << endl;
+            //cout << "Drawing point " << points[i].first << endl;
             Point faceCenter;
             faceCenter.x = points[i].second.x + points[i].second.width/2;
             faceCenter.y = points[i].second.y + points[i].second.height/2;
