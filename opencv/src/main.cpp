@@ -17,6 +17,10 @@ std::vector<std::pair<int, Rect>> detectFace(Mat frame) {
                                   1.1, minNeighbors,
                                   0 | CASCADE_SCALE_IMAGE, Size(30, 30));
 
+
+    if (faces.size()>0){ROS_INFO("Face detected!");}
+    else{ROS_INFO("No face detected!");}
+
     for (size_t i = 0; i < faces.size(); i++) {
         Point center(faces[i].x + faces[i].width / 2, faces[i].y + faces[i].height / 2);
         retFaces.push_back(pair<int, Rect>(i, faces[i]));
@@ -32,7 +36,7 @@ int main(int argc, char **argv) {
     init(argc, argv, "opencv_camera_head_tracking");
     NodeHandle nh;
 
-    Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 100);
+    Publisher pub = nh.advertise<priorityhandler::PrioMsg>("Prio/cmd_vel", 100);
 
 		if (!cap.isOpened())
 	 	{
@@ -55,6 +59,7 @@ int main(int argc, char **argv) {
         bool suc = cap.read(frame);
         if (!suc) {
             cout << "Can't read frame from camera" << endl;
+	          ROS_FATAL("Can't read frame from camera!");
             return -1;
         }
 				points = detectFace(frame);
@@ -81,10 +86,17 @@ int main(int argc, char **argv) {
             ellipse(frame, faceCenter, Size(points[i].second.width/2, points[i].second.height/2), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0);
         }
         imshow("Image", frame);
+
+	      if (msg.angular.z>0)ROS_INFO("Turning left to follow face.");
+	      if (msg.angular.z<0)ROS_INFO("Turning right to follow face.");
+	      if (msg.linear.x<0)ROS_INFO("Driving towards face.");
         //geometry_msgs::Twist msg;
         //msg.linear.x = 4;
         //msg.angular.z = 4;
-        pub.publish(msg);
+        priorityhandler::PrioMsg prio_msg;
+        prio_msg.priority = 1;
+        prio_msg.cmd = msg;
+        pub.publish(prio_msg);
         //spinOnce();
         if (waitKey(1) == 27) {
             break;

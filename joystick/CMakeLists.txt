@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   joy
   roscpp
   turtlesim
+  priorityhandler
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +108,9 @@ catkin_package(
 #  LIBRARIES learning_joy
 #  CATKIN_DEPENDS joy roscpp turtlesim
 #  DEPENDS system_lib
+	CATKIN_DEPENDS roscpp std_msgs priorityhandler
 )
+
 
 ###########
 ## Build ##

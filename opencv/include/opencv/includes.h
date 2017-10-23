@@ -15,7 +15,9 @@
 #include <cmath>
 
 #include <ros/ros.h>
+#include <ros/console.h>
 #include <geometry_msgs/Twist.h>
+#include <priorityhandler/PrioMsg.h>
 #include <stdlib.h>
 
 using namespace cv;
