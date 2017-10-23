@@ -205,3 +205,6 @@ add_executable(opencv src/main.cpp)
 target_link_libraries(opencv ${catkin_LIBRARIES} ${OpenCV_LIBS})
 add_dependencies(opencv ${catkin_EXPORTED_TARGETS})
 
+add_executable(laser src/laser.cpp)
+target_link_libraries(laser ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_dependencies(laser ${catkin_EXPORTED_TARGETS})
