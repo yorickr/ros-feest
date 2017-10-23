@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 100);
     Subscriber sub = nh.subscribe("Prio/cmd_vel", 100, cmd_vel_cb);
 
-    Rate rate(20);
+    Rate rate(100);
     cout << "Starting loop" << endl;
     while(ok()) {
         //geometry_msgs::Twist msg;
