@@ -81,18 +81,12 @@ int main(int argc, char **argv) {
                 // robot should turn left
                 msg.angular.z = turnConstant;
             } else {
-                msg.linear.x = -4;
+                msg.linear.x = 0.5f;
             }
             ellipse(frame, faceCenter, Size(points[i].second.width/2, points[i].second.height/2), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0);
         }
         imshow("Image", frame);
 
-	      if (msg.angular.z>0)ROS_INFO("Turning left to follow face.");
-	      if (msg.angular.z<0)ROS_INFO("Turning right to follow face.");
-	      if (msg.linear.x<0)ROS_INFO("Driving towards face.");
-        //geometry_msgs::Twist msg;
-        //msg.linear.x = 4;
-        //msg.angular.z = 4;
         priorityhandler::PrioMsg prio_msg;
         prio_msg.priority = 1;
         prio_msg.cmd = msg;
