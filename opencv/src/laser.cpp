@@ -14,12 +14,16 @@ std::pair<int, int> detectLaser(Mat frame)
     cvtColor(frame, hsv, COLOR_BGR2HSV);
 
     // Red (0, 255, 191)
-    int const hue = 179;
-    int const lowerMargin = 10;
-    int const upperMargin = 10;
+    int const hue = 160;
+    int const lowerMargin = 15;
+    int const upperMargin = 15;
     int lowerLimit = hue - lowerMargin;
     int upperLimit = hue + upperMargin;
-    Scalar lower(lowerLimit, 50, 50);
+    if (lowerLimit < 0)
+        lowerLimit = 0;
+    if (upperLimit > 179)
+        upperLimit = 179;
+    Scalar lower(lowerLimit, 50, 225);
     Scalar upper(upperLimit, 255, 255);
     inRange(hsv, lower, upper, mask);
 
@@ -48,8 +52,8 @@ std::pair<int, int> detectLaser(Mat frame)
     // // Show blobs
     imshow("keypoints", im_with_keypoints);
 
-    // Laser detected
-    if (keypoints.size() > 0)
+    // Only Laser detected
+    if (keypoints.size() == 1)
         return make_pair(keypoints[0].pt.x, keypoints[0].pt.y);
     else
         return make_pair(0, 0);
@@ -60,7 +64,8 @@ int main(int argc, char **argv)
     init(argc, argv, "opencv_camera_laser_tracking");
     NodeHandle nh;
     // Publisher pub = nh.advertise<priorityhandler::PrioMsg>("Prio/cmd_vel", 100);
-    Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1000);
+    // Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1000);
+    Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
     Rate rate(10);
 
     float turnConstant = 0.25f;
