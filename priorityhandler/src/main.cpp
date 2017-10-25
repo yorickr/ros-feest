@@ -34,17 +34,20 @@ int main(int argc, char **argv) {
 
             // If higher priority message
             if (msg.priority >= last_prio) {
+                if (msg.priority > last_prio)ROS_INFO("Message with higher priority taking over.");
+
                 last_msg = Time::now();
                 last_prio = msg.priority;
 
                 // send it
                 cout << "Sending msg with prio " << msg.priority << endl;
                 pub.publish(msg.cmd);
-            } else if ((Time::now() - last_msg).toSec() >= 3.0) {
+            } else if ((Time::now() - last_msg).toSec() >= 3.0) { 
                 // Priority is lower, so wait for a 3s timeout in case higher priority messages come in.
                 // send it
                 last_prio = msg.priority;
                 last_msg = Time::now();
+                ROS_INFO("Message with lower priority taking over due to 3s time-out.");
                 cout << "Sending msg with prio " << msg.priority << endl;
                 pub.publish(msg.cmd);
 

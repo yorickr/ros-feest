@@ -20,8 +20,8 @@ std::vector<std::pair<int, Rect>> detectFace(Mat frame) {
                                   0 | CASCADE_SCALE_IMAGE, Size(30, 30));
 
 
-    if (faces.size()>0){ROS_INFO("Face detected!");}
-    else{ROS_INFO("No face detected!");}
+    // if (faces.size()>0){ROS_INFO("Face detected!");}
+    // else{ROS_INFO("No face detected!");}
 
     for (size_t i = 0; i < faces.size(); i++) {
         Point center(faces[i].x + faces[i].width / 2, faces[i].y + faces[i].height / 2);
@@ -33,7 +33,7 @@ std::vector<std::pair<int, Rect>> detectFace(Mat frame) {
 int main(int argc, char **argv) {
     cout << "Running opencv package" << endl;
 
-    VideoCapture cap = VideoCapture(0);
+    VideoCapture cap = VideoCapture(1);
 
     init(argc, argv, "opencv_camera_head_tracking");
     NodeHandle nh;
