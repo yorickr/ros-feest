@@ -23,7 +23,7 @@ std::pair<int, int> detectLaser(Mat frame)
         lowerLimit = 0;
     if (upperLimit > 179)
         upperLimit = 179;
-    Scalar lower(lowerLimit, 50, 225);
+    Scalar lower(lowerLimit, 50, 200);
     Scalar upper(upperLimit, 255, 255);
     inRange(hsv, lower, upper, mask);
 
@@ -63,37 +63,48 @@ int main(int argc, char **argv)
 {
     init(argc, argv, "opencv_camera_laser_tracking");
     NodeHandle nh;
-    // Publisher pub = nh.advertise<priorityhandler::PrioMsg>("Prio/cmd_vel", 100);
+    Publisher pub = nh.advertise<priorityhandler::PrioMsg>("Prio/cmd_vel", 100);
     // Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1000);
-    Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
+    // Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
     Rate rate(10);
 
-    float turnConstant = 0.25f;
-    int sensitivity = 50;
+    double sensitivity = 75.0;
+
+    float minHorSpeed = 0.25f;
+    float horDif = 0.25f;
+
+    float minVerSpeed = 0.15f;
+    float verDif = 0.25f;
+
 
     while (ok())
     {
         geometry_msgs::Twist msg;
         Mat frame = getFrameFromCam(0);
+        imshow("webcam", frame);
         pair<int, int> location = detectLaser(frame);
 
         //If laserpointer is detected
         if (location.first > 0 || location.second > 0)
         {
+            ROS_INFO("Laser gedetecteerd");
             // Naar rechts
             if (location.first > frameHalfWidth + sensitivity)
             {
-                msg.angular.z = -turnConstant;
+                msg.angular.z = ((location.first - (320.0+sensitivity)) / (320.0-sensitivity) * horDif + minHorSpeed) * -1.0;
             }
             // Naar links
             if (location.first < frameHalfWidth - sensitivity)
             {
-                msg.angular.z = turnConstant;
+                msg.angular.z = (1.0 - (location.first/(320.0-sensitivity))) * horDif + minHorSpeed;
             }
-            // Always drive forward when laser is detected
-            msg.linear.x = 0.20f;
+
+            msg.linear.x = (1.0 -location.second / 480.0) * verDif + minVerSpeed;
         }
-        pub.publish(msg);
+        priorityhandler::PrioMsg prio_msg;
+        prio_msg.priority = 3;
+        prio_msg.cmd = msg;
+        pub.publish(prio_msg);
         waitKey(1);
         rate.sleep();
     }
