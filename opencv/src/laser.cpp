@@ -76,7 +76,6 @@ int main(int argc, char **argv)
     float minVerSpeed = 0.15f;
     float verDif = 0.25f;
 
-
     while (ok())
     {
         geometry_msgs::Twist msg;
@@ -91,20 +90,21 @@ int main(int argc, char **argv)
             // Naar rechts
             if (location.first > frameHalfWidth + sensitivity)
             {
-                msg.angular.z = ((location.first - (320.0+sensitivity)) / (320.0-sensitivity) * horDif + minHorSpeed) * -1.0;
+                msg.angular.z = ((location.first - (320.0 + sensitivity)) / (320.0 - sensitivity) * horDif + minHorSpeed) * -1.0;
             }
             // Naar links
             if (location.first < frameHalfWidth - sensitivity)
             {
-                msg.angular.z = (1.0 - (location.first/(320.0-sensitivity))) * horDif + minHorSpeed;
+                msg.angular.z = (1.0 - (location.first / (320.0 - sensitivity))) * horDif + minHorSpeed;
             }
 
-            msg.linear.x = (1.0 -location.second / 480.0) * verDif + minVerSpeed;
+            msg.linear.x = (1.0 - location.second / 480.0) * verDif + minVerSpeed;
+            priorityhandler::PrioMsg prio_msg;
+            prio_msg.priority = 3;
+            prio_msg.cmd = msg;
+            pub.publish(prio_msg);
         }
-        priorityhandler::PrioMsg prio_msg;
-        prio_msg.priority = 3;
-        prio_msg.cmd = msg;
-        pub.publish(prio_msg);
+
         waitKey(1);
         rate.sleep();
     }
