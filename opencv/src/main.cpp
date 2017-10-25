@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
                 // robot should turn left
                 msg.angular.z = turnConstant;
             } else {
-                msg.linear.x = 0.5f;
+                msg.linear.x = 0.20f;
             }
             ellipse(frame, faceCenter, Size(points[i].second.width/2, points[i].second.height/2), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0);
         }
