@@ -3,7 +3,7 @@
 vector<priorityhandler::PrioMsg> messageQueue;
 
 void cmd_vel_cb(const priorityhandler::PrioMsg msg) {
-    cout << "Message received with priority " << msg.priority << endl;
+    //cout << "Message received with priority " << msg.priority << endl;
     messageQueue.push_back(msg);
 }
 
@@ -17,27 +17,38 @@ int main(int argc, char **argv) {
     init(argc, argv, "priority_handler");
     NodeHandle nh;
 
-    Publisher pub = nh.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 100);
-    Subscriber sub = nh.subscribe("Prio/cmd_vel", 100, cmd_vel_cb);
+    Publisher pub = nh.advertise<geometry_msgs::Twist>("RosAria/cmd_vel", 1);
+    Subscriber sub = nh.subscribe("Prio/cmd_vel", 10, cmd_vel_cb);
 
-    Rate rate(20);
+    Rate rate(30);
     cout << "Starting loop" << endl;
+
+    Time last_msg = Time::now();
+    int last_prio = -1;
+
     while(ok()) {
-        //geometry_msgs::Twist msg;
-        //msg.linear.x = 4;
-        //msg.angular.z = 4;
-        //pub.publish(msg);
-        // check message queue every 50ms and publish the highest priority one
+        // check message queue and publish the highest priority one
         if (messageQueue.size() > 0) {
             sort (messageQueue.begin(), messageQueue.end(), sortQueue);
-            for (int i = 0; i < messageQueue.size(); i++) {
-                auto msg = messageQueue[i];
-                cout << "Prio " << msg.priority << endl;
-            }
-            // send it
             priorityhandler::PrioMsg msg = messageQueue.front();
-            pub.publish(msg.cmd);
 
+            // If higher priority message
+            if (msg.priority >= last_prio) {
+                last_msg = Time::now();
+                last_prio = msg.priority;
+
+                // send it
+                cout << "Sending msg with prio " << msg.priority << endl;
+                pub.publish(msg.cmd);
+            } else if ((Time::now() - last_msg).toSec() >= 3.0) {
+                // Priority is lower, so wait for a 3s timeout in case higher priority messages come in.
+                // send it
+                last_prio = msg.priority;
+                last_msg = Time::now();
+                cout << "Sending msg with prio " << msg.priority << endl;
+                pub.publish(msg.cmd);
+
+            }
             messageQueue.clear();
         }
         spinOnce();
