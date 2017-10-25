@@ -11,7 +11,7 @@
     <param name="coalesce_interval" value="0.1" />
   </node>
 
-  <node pkg="ros_joystick" type="joystick_rosaria" name="ros2"/>
+  <node pkg="ros_joystick" type="joystick_rosaria" name="ros_joystick"/>
   <node pkg="priorityhandler" type="priorityhandler" name="priorityhandler"/>
   <node pkg="opencv" type="opencv" name="head_tracking" />
    <node pkg="opencv" type="laser" name="laser_tracking" />
